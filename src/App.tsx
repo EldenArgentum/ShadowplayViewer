@@ -4,6 +4,7 @@ import GameCard from "./components/GameCard.tsx"
 import {TextInput} from "@mantine/core"
 import {useEffect} from "react";
 import {readFileSync} from "fs"
+import dialog from "electron"
 
 
 
