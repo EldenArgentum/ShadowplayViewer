@@ -1,30 +1,8 @@
-# React + TypeScript + Vite
+# ShadowPlay Viewer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Hi, thanks for looking at my application! 
+The vision for this application is to be a customizable and characteristic gallery of replays in ShadowPlay, similar to a Plex/Steam library (being able to change the posters/banners).
 
-Currently, two official plugins are available:
+The reason this is "ShadowPlay" Viewer is because this is specifically designed around how Nvidia's ShadowPlay organizes the folders (each game has its own directory, each with replay files).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Eventually, once that vision is complete, I  would love to be able to implement ffmpeg for compression/conversion, and allow clipping of video files.
