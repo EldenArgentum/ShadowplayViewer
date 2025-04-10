@@ -1,0 +1,22 @@
+#root {
+  text-align: center;
+}
+
+.top-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+  gap: 10px;
+  padding: 30px;
+}
+
+.text-field {
+  max-width: 90%;
+  width: 100%;
+}
+
+.card {
+  width: 18em;
+  height: 27em;
+}
