@@ -17,6 +17,22 @@ const App = () => {
     // const img = new Image()
     // img.src = Valorant
 
+    const [input, setInput] = useState('');
+    const [output, setOutput] = useState<string>('');
+
+    const handleRead = async () => {
+        const result = await window.directoryAPI.readDirectory(input);
+        if (result.success) {
+            setOutput(JSON.stringify(result.contents, null, 2));
+        } else {
+            setOutput(`Error: ${result.error}`);
+        }
+    };
+
+    useEffect(() => {
+        console.log("input", input)
+    }, []);
+
 
     return (
     <div style={{minWidth: "100%"}}>
@@ -27,6 +43,8 @@ const App = () => {
                     label="Shadowplay Link"
                     description="Input Shadowplay folder directory that contains all game subdirectories (Ex: Dishonored, Monster Hunter: Wilds, R.E.P.O., StarCraft 2, Valorant)"
                     placeholder="F:\Shadowplay"
+                    onChange={(e) => setInput(e.target.value)}
+                    value={input}
                 />
             </div>
 
