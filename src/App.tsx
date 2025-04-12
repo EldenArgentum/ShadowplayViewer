@@ -1,10 +1,8 @@
 import "./App.css"
 import Valorant from "./assets/Valorant.jpg"
 import GameCard from "./components/GameCard.tsx"
-import {TextInput} from "@mantine/core"
-import {useEffect} from "react";
-import dialog from "electron"
-
+import {Button, TextInput} from "@mantine/core"
+import {useEffect, useState} from "react";
 
 
 const App = () => {
@@ -12,19 +10,14 @@ const App = () => {
     const [input, setInput] = useState('');
     const [output, setOutput] = useState<string>('');
 
-    const handleRead = async () => {
-        const result = await window.directoryAPI.readDirectory(input);
-        if (result.success) {
-            setOutput(JSON.stringify(result.contents, null, 2));
-        } else {
-            setOutput(`Error: ${result.error}`);
-        }
-    };
-
-    useEffect(() => {
-        console.log("input", input)
-        console.log("output", output)
-    }, [input, output]);
+    // const handleRead = async () => {
+    //     const result = await window.directoryAPI.readDirectory(input);
+    //     if (result.success) {
+    //         setOutput(JSON.stringify(result.contents, null, 2));
+    //     } else {
+    //         setOutput(`Error: ${result.error}`);
+    //     }
+    // };
 
 
     return (
@@ -43,6 +36,7 @@ const App = () => {
             <div className="card">
                 <GameCard image={Valorant}/>
             </div>
+            <input type='file' />
         </div>
     </div>
   )

@@ -1,6 +1,7 @@
-import { app, BrowserWindow, screen } from "electron";
+import { ipcMain, app, BrowserWindow, screen } from "electron";
 import { fileURLToPath } from "node:url";
-import path from "node:path";
+import path from "path";
+import * as fs from "fs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 process.env.APP_ROOT = path.join(__dirname, "..");
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
@@ -8,7 +9,32 @@ const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
 let win;
-function createWindow() {
+const readDirContents = (rootDir) => {
+  const result = {};
+  const gameDirs = fs.readdirSync(rootDir, { withFileTypes: true }).filter((dir) => dir.isDirectory());
+  for (const dir of gameDirs) {
+    const gameDirPath = path.join(rootDir, dir.name);
+    result[dir.name] = fs.readdirSync(gameDirPath, { withFileTypes: true });
+  }
+  return result;
+};
+ipcMain.handle("read-dir", async (event, rootPath) => {
+  try {
+    const contents = readDirContents(rootPath);
+    return { success: true, contents };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+ipcMain.handle("dir-dialog", async (event, rootPath) => {
+  try {
+    const contents = readDirContents(rootPath);
+    return { success: true, contents };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+const createWindow = () => {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
   win = new BrowserWindow({
@@ -16,7 +42,7 @@ function createWindow() {
     width,
     height,
     webPreferences: {
-      preload: path.join(__dirname, "preload.mjs")
+      preload: path.join(MAIN_DIST, "preload.mjs")
     }
   });
   win.webContents.on("did-finish-load", () => {
@@ -27,7 +53,7 @@ function createWindow() {
   } else {
     win.loadFile(path.join(RENDERER_DIST, "index.html"));
   }
-}
+};
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();

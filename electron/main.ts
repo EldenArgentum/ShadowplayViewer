@@ -19,7 +19,7 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 
 let win: BrowserWindow | null
 
-const readDirContents = (rootDir) => {
+const readDirContents = (rootDir: any) => {
   const result = {}
 
   const gameDirs = fs.readdirSync(rootDir, {withFileTypes: true})
@@ -32,12 +32,23 @@ const readDirContents = (rootDir) => {
   return result
 }
 
-ipcMain.handle("read-dir", async (event, rootPath) => {
+ipcMain.handle("read-dir", async (event: any, rootPath) => {
   try {
     const contents = readDirContents(rootPath)
     return {success: true, contents}
   }
-  catch (e) {
+  catch (e: any) {
+    return {success: false, error: e.message}
+  }
+})
+
+// dir-dialog will open dialog specifically for uploading directory (shadowplay); eventually, add file-dialog for changing poster
+ipcMain.handle("dir-dialog", async (event: any, rootPath) => {
+  try {
+    const contents = readDirContents(rootPath)
+    return {success: true, contents}
+  }
+  catch (e: any) {
     return {success: false, error: e.message}
   }
 })
@@ -51,7 +62,7 @@ const createWindow = () => {
     width: width,
     height: height,
     webPreferences: {
-      preload: path.join(MAIN_DIST, 'preload.ts'),
+      preload: path.join(MAIN_DIST, 'preload.mjs'),
     },
   })
 
