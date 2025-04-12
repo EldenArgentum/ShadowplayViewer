@@ -1,9 +1,8 @@
-import {app, BrowserWindow, screen} from 'electron'
+import {app, BrowserWindow, screen, ipcMain} from 'electron'
 // import { createRequire } from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from "path"
-import fs from "fs"
-import ipcMain from "electron/main"
+import * as fs from 'fs'
 
 
 // const require = createRequire(import.meta.url)
@@ -33,7 +32,7 @@ const readDirContents = (rootDir) => {
   return result
 }
 
-ipcMain.handle("read-dir", async (rootPath) => {
+ipcMain.handle("read-dir", async (event, rootPath) => {
   try {
     const contents = readDirContents(rootPath)
     return {success: true, contents}
@@ -52,7 +51,7 @@ const createWindow = () => {
     width: width,
     height: height,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.mjs'),
+      preload: path.join(MAIN_DIST, 'preload.ts'),
     },
   })
 

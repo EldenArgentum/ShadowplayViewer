@@ -3,19 +3,11 @@ import Valorant from "./assets/Valorant.jpg"
 import GameCard from "./components/GameCard.tsx"
 import {TextInput} from "@mantine/core"
 import {useEffect} from "react";
-import {readFileSync} from "fs"
 import dialog from "electron"
 
 
 
 const App = () => {
-
-    const files = readFileSync('/assets/', 'utf-8')
-    useEffect(() => {
-        console.log(files)
-    }, [files]);
-    // const img = new Image()
-    // img.src = Valorant
 
     const [input, setInput] = useState('');
     const [output, setOutput] = useState<string>('');
@@ -31,7 +23,8 @@ const App = () => {
 
     useEffect(() => {
         console.log("input", input)
-    }, []);
+        console.log("output", output)
+    }, [input, output]);
 
 
     return (
@@ -47,7 +40,6 @@ const App = () => {
                     value={input}
                 />
             </div>
-
             <div className="card">
                 <GameCard image={Valorant}/>
             </div>
