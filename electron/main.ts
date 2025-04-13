@@ -1,4 +1,4 @@
-import {app, BrowserWindow, screen, ipcMain} from 'electron'
+import {app, BrowserWindow, screen, ipcMain, dialog} from 'electron'
 // import { createRequire } from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from "path"
@@ -32,18 +32,20 @@ const readDirContents = (rootDir: any) => {
   return result
 }
 
-ipcMain.handle("read-dir", async (event: any, rootPath) => {
-  try {
-    const contents = readDirContents(rootPath)
-    return {success: true, contents}
-  }
-  catch (e: any) {
-    return {success: false, error: e.message}
-  }
-})
-
 // dir-dialog will open dialog specifically for uploading directory (shadowplay); eventually, add file-dialog for changing poster
-ipcMain.handle("dir-dialog", async (event: any, rootPath) => {
+ipcMain.handle("root-dir-dialog", async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: ['openDirectory']
+  })
+  if (canceled) {
+    return null
+  } else {
+    console.log(filePaths)
+    return filePaths[0]
+  }
+})
+
+ipcMain.handle("get-sub-dirs", async (event: any, rootPath) => {
   try {
     const contents = readDirContents(rootPath)
     return {success: true, contents}
@@ -52,7 +54,6 @@ ipcMain.handle("dir-dialog", async (event: any, rootPath) => {
     return {success: false, error: e.message}
   }
 })
-
 
 const createWindow = () => {
   const primaryDisplay = screen.getPrimaryDisplay()

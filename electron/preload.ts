@@ -20,6 +20,6 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   },
 
   // You can expose other APTs you need here.
-  getDirs: (rootDir: any) => ipcRenderer.invoke('read-dir', rootDir)
-
+  rootDirDialog: () => ipcRenderer.invoke('root-dir-dialog'),
+  getSubDirs: (rootDir: any) => ipcRenderer.invoke('get-sub-dirs', rootDir),
 })

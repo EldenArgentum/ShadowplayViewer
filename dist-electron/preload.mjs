@@ -18,5 +18,6 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
     return electron.ipcRenderer.invoke(channel, ...omit);
   },
   // You can expose other APTs you need here.
-  getDirs: (rootDir) => electron.ipcRenderer.invoke("read-dir", rootDir)
+  rootDirDialog: () => electron.ipcRenderer.invoke("root-dir-dialog"),
+  getSubDirs: (rootDir) => electron.ipcRenderer.invoke("get-sub-dirs", rootDir)
 });

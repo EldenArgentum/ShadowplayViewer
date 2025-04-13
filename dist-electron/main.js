@@ -1,4 +1,4 @@
-import { ipcMain, app, BrowserWindow, screen } from "electron";
+import { ipcMain, dialog, app, BrowserWindow, screen } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "path";
 import * as fs from "fs";
@@ -18,15 +18,18 @@ const readDirContents = (rootDir) => {
   }
   return result;
 };
-ipcMain.handle("read-dir", async (event, rootPath) => {
-  try {
-    const contents = readDirContents(rootPath);
-    return { success: true, contents };
-  } catch (e) {
-    return { success: false, error: e.message };
+ipcMain.handle("root-dir-dialog", async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: ["openDirectory"]
+  });
+  if (canceled) {
+    return null;
+  } else {
+    console.log(filePaths);
+    return filePaths[0];
   }
 });
-ipcMain.handle("dir-dialog", async (event, rootPath) => {
+ipcMain.handle("get-sub-dirs", async (event, rootPath) => {
   try {
     const contents = readDirContents(rootPath);
     return { success: true, contents };
