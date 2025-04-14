@@ -37,6 +37,11 @@ ipcMain.handle("get-sub-dirs", async (event, rootPath) => {
     return { success: false, error: e.message };
   }
 });
+ipcMain.handle("make-poster-dir", async (event, subDirs) => {
+  subDirs.map((subDir) => {
+    return;
+  });
+});
 const createWindow = () => {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;

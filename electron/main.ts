@@ -55,6 +55,12 @@ ipcMain.handle("get-sub-dirs", async (event: any, rootPath) => {
   }
 })
 
+ipcMain.handle("make-poster-dir", async (event: any, subDirs:[string]) => {
+  subDirs.map(subDir => {
+    return
+  })
+})
+
 const createWindow = () => {
   const primaryDisplay = screen.getPrimaryDisplay()
   const { width, height } = primaryDisplay.workAreaSize
