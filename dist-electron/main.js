@@ -38,9 +38,6 @@ ipcMain.handle("get-sub-dirs", async (event, rootPath) => {
   }
 });
 ipcMain.handle("make-poster-dir", async (event, subDirs) => {
-  subDirs.map((subDir) => {
-    return;
-  });
 });
 const createWindow = () => {
   const primaryDisplay = screen.getPrimaryDisplay();

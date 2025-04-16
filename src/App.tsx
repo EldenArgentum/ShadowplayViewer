@@ -1,13 +1,13 @@
 import "./App.css"
 import Valorant from "./assets/Valorant.jpg"
 import GameCard from "./components/GameCard.tsx"
-import {Button, TextInput} from "@mantine/core"
+import {Button} from "@mantine/core"
 import {useEffect, useState} from "react";
 
 const App = () => {
 
     const [rootDir, setRootDir] = useState<string>('');
-    const [subDirs, setSubDirs] = useState<[string]>([""])
+    const [subDirs, setSubDirs] = useState<[string]>()
 
     const handleRead = async () => {
         const rootDirInput = await window.ipcRenderer.rootDirDialog()
@@ -18,14 +18,13 @@ const App = () => {
     }
 
     useEffect(() => {
+
     }, [rootDir, subDirs]);
 
     return (
     <div style={{minWidth: "100%"}}>
 
-        <div className="card">
-            <GameCard image={Valorant}/>
-        </div>
+        <GameCard image={Valorant}/>
 
         <Button onClick={() => handleRead()}>
             This Will Open Up Dialog

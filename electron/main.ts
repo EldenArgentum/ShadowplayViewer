@@ -3,6 +3,7 @@ import {app, BrowserWindow, screen, ipcMain, dialog} from 'electron'
 import {fileURLToPath} from 'node:url'
 import path from "path"
 import * as fs from 'fs'
+import axios from "axios"
 
 
 // const require = createRequire(import.meta.url)
@@ -56,9 +57,7 @@ ipcMain.handle("get-sub-dirs", async (event: any, rootPath) => {
 })
 
 ipcMain.handle("make-poster-dir", async (event: any, subDirs:[string]) => {
-  subDirs.map(subDir => {
-    return
-  })
+
 })
 
 const createWindow = () => {
