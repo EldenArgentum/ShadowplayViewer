@@ -22,10 +22,9 @@ ipcMain.handle("root-dir-dialog", async () => {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ["openDirectory"]
   });
-  if (canceled) {
+  if (canceled || filePaths.length === 0) {
     return null;
   } else {
-    console.log(filePaths);
     return filePaths[0];
   }
 });
@@ -37,7 +36,54 @@ ipcMain.handle("get-sub-dirs", async (event, rootPath) => {
     return { success: false, error: e.message };
   }
 });
-ipcMain.handle("make-poster-dir", async (event, subDirs) => {
+ipcMain.handle("upload-poster", async () => {
+  try {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      title: "Select Game Poster Image",
+      buttonLabel: "Choose Image",
+      properties: ["openFile"],
+      filters: [{ name: "Images", extensions: ["jpg", "png", "webp", "gif", "jpeg"] }]
+      // Fixed: filters should be an array
+    });
+    if (canceled || filePaths.length === 0) {
+      return null;
+    }
+    return filePaths[0];
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+});
+ipcMain.handle("save-game-poster", async (event, gameName, sourcePath) => {
+  try {
+    if (!gameName || !sourcePath) {
+      return { success: false, error: "Missing game name or image path" };
+    }
+    const posterDir = path.join(app.getPath("userData"), "game-posters");
+    if (!fs.existsSync(posterDir)) {
+      fs.mkdirSync(posterDir, { recursive: true });
+    }
+    const safeGameName = gameName.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+    const imageExt = path.extname(sourcePath);
+    const destPath = path.join(posterDir, `${safeGameName}${imageExt}`);
+    fs.copyFileSync(sourcePath, destPath);
+    const imageBuffer = fs.readFileSync(destPath);
+    const base64Image = imageBuffer.toString("base64");
+    const mimeType = imageExt.toLowerCase() === ".png" ? "image/png" : imageExt.toLowerCase() === ".gif" ? "image/gif" : imageExt.toLowerCase() === ".webp" ? "image/webp" : "image/jpeg";
+    const dataUrl = `data:${mimeType};base64,${base64Image}`;
+    return {
+      success: true,
+      imagePath: destPath,
+      dataUrl
+      // Return the data URL for direct use in img src
+    };
+  } catch (error) {
+    console.error("Error saving image:", error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
 });
 const createWindow = () => {
   const primaryDisplay = screen.getPrimaryDisplay();
@@ -70,7 +116,9 @@ app.on("activate", () => {
     createWindow();
   }
 });
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+});
 export {
   MAIN_DIST,
   RENDERER_DIST,

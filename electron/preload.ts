@@ -22,4 +22,6 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // You can expose other APTs you need here.
   rootDirDialog: () => ipcRenderer.invoke('root-dir-dialog'),
   getSubDirs: (rootDir: any) => ipcRenderer.invoke('get-sub-dirs', rootDir),
+  uploadPoster: () => ipcRenderer.invoke('upload-poster'),
+  saveGamePoster: (gameName, imagePath) => ipcRenderer.invoke('save-game-poster', gameName, imagePath),
 })
