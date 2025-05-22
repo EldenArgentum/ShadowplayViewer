@@ -28,6 +28,7 @@ const App = () => {
         }
     };
 
+    // This should be reused in the component when clicking on a subdirectory, to find all of the videos associated with a selected video.
     const handleLoadSubDirs = async (dir: string) => {
         const scanResult = await window.ipcRenderer.getSubDirs(dir);
         if (scanResult.success) {
@@ -39,9 +40,12 @@ const App = () => {
 
     return (
         <div style={{ minWidth: "100%" }}>
-            <Button onClick={handleReadDirectories}>
-                {rootDir ? 'Change Directory' : 'Select Shadowplay Directory'}
-            </Button>
+
+            <div className="button-container-top">
+                <Button onClick={handleReadDirectories}>
+                    {rootDir ? `Change Directory (Currently ${rootDir})` : 'Select Shadowplay Directory'}
+                </Button>
+            </div>
 
             <div className="game-grid">
                 {subDirs.map((gameDir) => (

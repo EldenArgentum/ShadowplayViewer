@@ -1,16 +1,20 @@
+/* App.css - Global application styles */
+
 #root {
   text-align: center;
   width: 100%;
   max-width: 100%;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  position: absolute;
 }
 
-.top-bar {
+.button-container-top {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: start;
-  gap: 10px;
-  padding: 30px;
+  justify-content: center; /* Center the button horizontally */
+  width: 100%;
+  padding-top: 30px;
 }
 
 .middle {
@@ -24,94 +28,26 @@
   text-align: center;
 }
 
-/* Game grid layout */
+/* Game grid layout - used by App component */
 .game-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(18em, 1fr));
   gap: 30px;
   padding: 30px;
-  width: 100%;
+  padding-left: 300px;
+  padding-right: 300px;
+  width: auto;
+  margin: 0 auto;
   justify-content: center;
 }
 
-/* Game card styling */
-.game-card {
-  width: 18em;
-  height: 27em;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.3s ease;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 0 auto; /* Center the cards in their grid cells */
-}
-
-.game-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.game-card:hover .card-image {
-  filter: brightness(0.8);
-}
-
-.image-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: filter 0.3s ease;
-}
-
-/* Game title overlay */
-.game-title {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  border-radius: 8px;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-  color: white;
-  padding: 20px 12px 12px;
-  font-weight: bold;
-  text-align: left;
-  font-size: 1.1em;
-  opacity: 0.9;
-  transition: opacity 0.3s ease;
-}
-
-.game-card:hover .game-title {
-  opacity: 1;
-}
-
-/* Button container for actions */
-.button-container {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 2;
-}
-
-.button-container.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Action buttons */
+/* Action buttons - if used elsewhere in the app */
 .action-button-group {
   display: flex;
   gap: 8px;
 }
 
-/* Loading state */
+/* Loading state - if used elsewhere in the app */
 .loading-overlay {
   position: absolute;
   top: 0;
@@ -125,7 +61,7 @@
   z-index: 10;
 }
 
-/* Empty state */
+/* Empty state - for when no games are found */
 .empty-directory {
   display: flex;
   flex-direction: column;
@@ -141,7 +77,7 @@
   color: #aaa;
 }
 
-/* Control panel */
+/* Control panel - for app-level controls */
 .control-panel {
   background: #f5f5f5;
   border-radius: 8px;
@@ -152,31 +88,7 @@
   align-items: center;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .game-grid {
-    grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
-    gap: 15px;
-    padding: 15px;
-  }
-
-  .game-card {
-    width: 15em;
-    height: 22.5em;
-  }
-
-  .control-panel {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .top-bar {
-    flex-direction: column;
-    padding: 15px;
-  }
-}
-
-/* Path display */
+/* Path display - for showing current directory */
 .current-path {
   background: #f0f0f0;
   padding: 10px 15px;
@@ -190,42 +102,21 @@
   white-space: nowrap;
 }
 
-.placeholder-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.placeholder-content {
-  text-align: center;
-  padding: 20px;
-  color: #555;
-}
-
-.placeholder-content p {
-  margin: 10px 0;
-}
-
-.placeholder-hint {
-  font-size: 0.9em;
-  opacity: 0.8;
-  font-style: italic;
-}
-
-/* Fade-in animation for cards */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .game-grid {
+    grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+    gap: 15px;
+    padding: 15px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-.game-card {
-  animation: fadeIn 0.3s ease forwards;
+  .control-panel {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    padding: 15px;
+  }
 }

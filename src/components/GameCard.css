@@ -1,0 +1,149 @@
+.card {
+    /* Main card wrapper - no specific styles needed, inherits from grid */
+}
+
+.game-card {
+    width: 18em;
+    height: 27em;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 0 auto; /* Center the cards in their grid cells */
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.game-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.game-card:hover .card-image {
+    filter: brightness(0.8);
+}
+
+.game-card:hover .game-title {
+    opacity: 1;
+}
+
+.image-container {
+    position: relative;
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+}
+
+/* Placeholder styles for when no image is set */
+.placeholder-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.placeholder-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.placeholder-content p {
+    margin: 10px 0;
+}
+
+.placeholder-hint {
+    font-size: 0.9em;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+/* Game title overlay */
+.game-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 8px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: white;
+    padding: 20px 12px 12px;
+    font-weight: bold;
+    text-align: left;
+    font-size: 1.1em;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+/* Button container for actions */
+.button-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 2;
+}
+
+.button-container.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Loading state overlay */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    color: white;
+    font-weight: bold;
+}
+
+/* Fade-in animation for cards */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .game-card {
+        width: 15em;
+        height: 22.5em;
+    }
+
+    .game-title {
+        font-size: 1em;
+        padding: 15px 10px 10px;
+    }
+
+    .button-container {
+        top: 8px;
+        right: 8px;
+    }
+
+    .placeholder-content {
+        padding: 15px;
+    }
+}

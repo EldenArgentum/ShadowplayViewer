@@ -2,6 +2,7 @@ import { ActionIcon, Card, Group, Image } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { IconPencil, IconCarambola, IconTrash } from "@tabler/icons-react"
 import { useState, useEffect } from "react"
+import "./GameCard.css"
 
 // Interface for props
 interface GameCardProps {
@@ -9,40 +10,14 @@ interface GameCardProps {
 }
 
 const GameCard = ({ gameDir }: GameCardProps) => {
-    const { hovered, ref } = useHover();
+    const { hovered: cardHovered, ref: cardRef } = useHover();
+    const { hovered: editHovered, ref: editRef } = useHover();
+    const { hovered: favHovered, ref: favRef } = useHover();
+    const { hovered: deleteHovered, ref: deleteRef } = useHover();
+
+    // CHANGE: Added isLoading state
     const [posterImage, setPosterImage] = useState<string | null>(null);
-
-    // On component mount, check if we have a custom poster
-    useEffect(() => {
-        const posters = JSON.parse(localStorage.getItem('gamePosters') || '{}');
-        if (posters[gameDir]) {
-            setPosterImage(`file://${posters[gameDir]}`);
-        }
-    }, [gameDir]);
-
-    // Handle edit button click - select and save new poster
-    const handleEdit = async () => {
-        try {
-            // Open dialog for user to select an image
-            const imagePath = await window.ipcRenderer.uploadPoster();
-            if (!imagePath) return; // User canceled
-
-            // Save the image to app storage
-            const result = await window.ipcRenderer.saveGamePoster(gameDir, imagePath);
-
-            if (result.success) {
-                // Use the returned dataUrl directly
-                setPosterImage(result.dataUrl);
-
-                // Save to localStorage for persistence
-                const posters = JSON.parse(localStorage.getItem('gamePosters') || '{}');
-                posters[gameDir] = result.dataUrl; // Store the data URL
-                localStorage.setItem('gamePosters', JSON.stringify(posters));
-            }
-        } catch (error) {
-            console.error("Error updating poster:", error);
-        }
-    };
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // Get the game name from the full path
     const getGameName = () => {
@@ -50,11 +25,78 @@ const GameCard = ({ gameDir }: GameCardProps) => {
         return parts[parts.length - 1] || gameDir;
     };
 
+    useEffect(() => {
+        try {
+            // Get saved posters from localStorage
+            const savedPosters = localStorage.getItem('gamePosters');
+            if (savedPosters) {
+                const posters = JSON.parse(savedPosters);
+                if (posters[gameDir]) {
+                    setPosterImage(posters[gameDir]);
+                }
+            }
+            console.log(`POSTERIMAGE ${posterImage}`)
+        } catch (error) {
+            console.error("Error loading saved poster:", error);
+        }
+    }, [gameDir]);
+
+    // CHANGE: Enhanced handleEdit with loading state and better localStorage handling
+    const handleEdit = async () => {
+        try {
+            // CHANGE: Added loading state
+            setIsLoading(true);
+
+            // Open dialog for user to select an image, will return a file path to use
+            const imagePath = await window.ipcRenderer.uploadPoster();
+            if (!imagePath) {
+                setIsLoading(false);
+                return; // User canceled
+            }
+
+            // Save the image to app storage and get data URL
+            const result = await window.ipcRenderer.saveGamePoster(getGameName(), imagePath);
+
+            // CHANGE: Reset loading state
+            setIsLoading(false);
+
+            if (result.success) {
+
+                setPosterImage(result.dataUrl);
+
+                const savedPosters = localStorage.getItem('gamePosters');
+                const posters = savedPosters ? JSON.parse(savedPosters) : {};
+                posters[gameDir] = result.dataUrl; // Store the data URL
+                localStorage.setItem('gamePosters', JSON.stringify(posters));
+
+            }
+        } catch (error) {
+            // CHANGE: Reset loading state on error
+            setIsLoading(false);
+            console.error("Error updating poster:", error);
+        }
+    };
+
+    const handleDelete = () => {
+        const posters = JSON.parse(localStorage.getItem('gamePosters') as string)
+        delete posters[gameDir]
+        localStorage.setItem('gamePosters', JSON.stringify(posters))
+        setPosterImage(null)
+    }
+
+    // CHANGE: Updated render section with loading state and better placeholder
     return (
-        <div className="card" ref={ref}>
+        <div className="card" ref={cardRef}>
             <Card radius={'md'} className="game-card">
                 <div className="image-container">
-                    {posterImage ? (
+                    {isLoading ? (
+                        // CHANGE: Added loading indicator
+                        <div className="placeholder-container">
+                            <div className="placeholder-content">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+                    ) : posterImage ? (
                         <Image src={posterImage} className="card-image" />
                     ) : (
                         <div className="placeholder-container">
@@ -67,15 +109,37 @@ const GameCard = ({ gameDir }: GameCardProps) => {
 
                     <div className="game-title">{getGameName()}</div>
 
-                    <div className={`button-container ${hovered ? 'visible' : ''}`}>
+                    <div className={`button-container ${cardHovered ? 'visible' : ''}`}>
                         <Group spacing="xs">
-                            <ActionIcon onClick={handleEdit} variant="filled" radius="xl" size="md" color="blue">
+                            <ActionIcon
+                                ref={editRef}
+                                onClick={handleEdit}
+                                variant={editHovered ? "filled" : "transparent"}
+                                radius="xl"
+                                size="md"
+                                color={editHovered ? "blue" : undefined}
+                                // CHANGE: Added loading state to button
+                                loading={isLoading}
+                            >
                                 <IconPencil size={16} />
                             </ActionIcon>
-                            <ActionIcon variant="filled" radius="xl" size="md" color="yellow">
+                            <ActionIcon
+                                ref={favRef}
+                                variant={favHovered ? "filled" : "transparent"}
+                                radius="xl"
+                                size="md"
+                                color={favHovered? "yellow": undefined}
+                            >
                                 <IconCarambola size={16} />
                             </ActionIcon>
-                            <ActionIcon variant="filled" radius="xl" size="md" color="red">
+                            <ActionIcon
+                                ref={deleteRef}
+                                onClick={handleDelete}
+                                variant={deleteHovered ? "filled" : "transparent"}
+                                radius="xl"
+                                size="md"
+                                color={deleteHovered ? "red": undefined}
+                            >
                                 <IconTrash size={16} />
                             </ActionIcon>
                         </Group>
