@@ -5,10 +5,12 @@ import './index.css'
 
 import "@mantine/core/styles.css"
 import { MantineProvider } from '@mantine/core'
+import {Notifications} from "@mantine/notifications";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
       <MantineProvider defaultColorScheme="dark">
+          <Notifications position="bottom-right"/>
           <App />
       </MantineProvider>
   </React.StrictMode>,

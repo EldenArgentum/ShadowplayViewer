@@ -123,6 +123,7 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(MAIN_DIST, 'preload.mjs'),
     },
+    autoHideMenuBar: true,
   })
 
 

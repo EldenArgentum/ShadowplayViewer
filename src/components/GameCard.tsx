@@ -1,5 +1,6 @@
 import { ActionIcon, Card, Group, Image } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
+import { notifications } from "@mantine/notifications"
 import { IconPencil, IconCarambola, IconTrash } from "@tabler/icons-react"
 import { useState, useEffect } from "react"
 import "./GameCard.css"
@@ -79,7 +80,14 @@ const GameCard = ({ gameDir }: GameCardProps) => {
 
     const handleDelete = () => {
         const posters = JSON.parse(localStorage.getItem('gamePosters') as string)
-        delete posters[gameDir]
+        if (!posters[gameDir]) {
+            notifications.show({
+                title: 'Silly Silly!',
+                message: 'You can\'t delete a poster that doesn\'t exist!',
+                color: "red"
+            })
+            return
+        }
         localStorage.setItem('gamePosters', JSON.stringify(posters))
         setPosterImage(null)
     }

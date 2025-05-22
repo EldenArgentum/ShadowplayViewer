@@ -94,7 +94,8 @@ const createWindow = () => {
     height,
     webPreferences: {
       preload: path.join(MAIN_DIST, "preload.mjs")
-    }
+    },
+    autoHideMenuBar: true
   });
   win.webContents.on("did-finish-load", () => {
     win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
