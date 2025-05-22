@@ -82,8 +82,17 @@ const GameCard = ({ gameDir }: GameCardProps) => {
     const handleDelete = () => {
         const posters = JSON.parse(localStorage.getItem('gamePosters') as string)
 
+        if (!posters[gameDir]) {
+            notifications.show({
+                title: 'Silly Silly!',
+                message: 'You can\'t delete a poster that doesn\'t exist!',
+                color: "red"
+            })
+            return
+        }
+
         modals.openConfirmModal({
-            title: 'Delete poster?',
+            title: 'Delete Poster?',
             children: (
                 <Text size="sm">
                     Confirm to delete poster; this cannot be undone. Make sure you have the original copy!!!
@@ -93,14 +102,6 @@ const GameCard = ({ gameDir }: GameCardProps) => {
             confirmProps: { color: 'red' },
             onCancel: () => console.log('Cancel'),
             onConfirm: () => {
-                if (!posters[gameDir]) {
-                    notifications.show({
-                        title: 'Silly Silly!',
-                        message: 'You can\'t delete a poster that doesn\'t exist!',
-                        color: "red"
-                    })
-                    return
-                }
                 delete posters[gameDir]
                 localStorage.setItem('gamePosters', JSON.stringify(posters))
                 setPosterImage(null)
@@ -110,17 +111,6 @@ const GameCard = ({ gameDir }: GameCardProps) => {
                 })
             },
         })
-
-        // if (!posters[gameDir]) {
-        //     notifications.show({
-        //         title: 'Silly Silly!',
-        //         message: 'You can\'t delete a poster that doesn\'t exist!',
-        //         color: "red"
-        //     })
-        //     return
-        // }
-        // localStorage.setItem('gamePosters', JSON.stringify(posters))
-        // setPosterImage(null)
     }
 
     // CHANGE: Updated render section with loading state and better placeholder
