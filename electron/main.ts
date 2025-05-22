@@ -17,7 +17,7 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 
 let win: BrowserWindow | null
 
-const readDirContents = (rootDir: any) => {
+const readDirContents = (rootDir: unknown) => {
   const result = {}
 
   const gameDirs = fs.readdirSync(rootDir, {withFileTypes: true})
@@ -42,12 +42,12 @@ ipcMain.handle("root-dir-dialog", async () => {
   }
 })
 
-ipcMain.handle("get-sub-dirs", async (event: any, rootPath) => {
+ipcMain.handle("get-sub-dirs", async (event: unknown, rootPath) => {
   try {
     const contents = readDirContents(rootPath)
     return {success: true, contents}
   }
-  catch (e: any) {
+  catch (e: unknown) {
     return {success: false, error: e.message}
   }
 })

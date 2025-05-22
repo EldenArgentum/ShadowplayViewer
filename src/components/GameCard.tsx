@@ -1,9 +1,10 @@
-import { ActionIcon, Card, Group, Image } from "@mantine/core"
+import { ActionIcon, Card, Group, Image, Text } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { notifications } from "@mantine/notifications"
 import { IconPencil, IconCarambola, IconTrash } from "@tabler/icons-react"
 import { useState, useEffect } from "react"
 import "./GameCard.css"
+import { modals } from "@mantine/modals";
 
 // Interface for props
 interface GameCardProps {
@@ -80,16 +81,46 @@ const GameCard = ({ gameDir }: GameCardProps) => {
 
     const handleDelete = () => {
         const posters = JSON.parse(localStorage.getItem('gamePosters') as string)
-        if (!posters[gameDir]) {
-            notifications.show({
-                title: 'Silly Silly!',
-                message: 'You can\'t delete a poster that doesn\'t exist!',
-                color: "red"
-            })
-            return
-        }
-        localStorage.setItem('gamePosters', JSON.stringify(posters))
-        setPosterImage(null)
+
+        modals.openConfirmModal({
+            title: 'Delete poster?',
+            children: (
+                <Text size="sm">
+                    Confirm to delete poster; this cannot be undone. Make sure you have the original copy!!!
+                </Text>
+            ),
+            labels: { confirm: 'Delete', cancel: 'Cancel' },
+            confirmProps: { color: 'red' },
+            onCancel: () => console.log('Cancel'),
+            onConfirm: () => {
+                if (!posters[gameDir]) {
+                    notifications.show({
+                        title: 'Silly Silly!',
+                        message: 'You can\'t delete a poster that doesn\'t exist!',
+                        color: "red"
+                    })
+                    return
+                }
+                delete posters[gameDir]
+                localStorage.setItem('gamePosters', JSON.stringify(posters))
+                setPosterImage(null)
+                notifications.show({
+                    title: 'Success!',
+                    message: 'Successfully deleted the poster! Who needed that thing anyway?',
+                })
+            },
+        })
+
+        // if (!posters[gameDir]) {
+        //     notifications.show({
+        //         title: 'Silly Silly!',
+        //         message: 'You can\'t delete a poster that doesn\'t exist!',
+        //         color: "red"
+        //     })
+        //     return
+        // }
+        // localStorage.setItem('gamePosters', JSON.stringify(posters))
+        // setPosterImage(null)
     }
 
     // CHANGE: Updated render section with loading state and better placeholder
