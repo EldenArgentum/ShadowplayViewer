@@ -1,4 +1,22 @@
-import { ipcRenderer, contextBridge } from 'electron'
+import {ipcRenderer, contextBridge, IpcRenderer} from 'electron'
+
+declare global {
+  interface Window {
+    ipcRenderer: {
+      /* eslint-disable  @typescript-eslint/no-explicit-any */
+      send: (channel: string, ...args: any[]) => void
+      invoke: (channel: string, ...args: any[]) => Promise<any>
+      on: (channel: string, ...args: any[]) => IpcRenderer
+      off: (channel: string, ...args: any[]) => IpcRenderer
+      rootDirDialog: () => Promise<any>
+      getSubDirs: (rootDir: unknown) => Promise<any>
+      uploadPoster: () => Promise<any>
+      saveGamePoster: (gameName: unknown, imagePath: unknown) => Promise<any>
+
+    }
+  }
+}
+
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', {

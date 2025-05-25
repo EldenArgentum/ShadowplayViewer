@@ -28,12 +28,12 @@ ipcMain.handle("root-dir-dialog", async () => {
     return filePaths[0];
   }
 });
-ipcMain.handle("get-sub-dirs", async (event, rootPath) => {
+ipcMain.handle("get-sub-dirs", async (_event, rootPath) => {
   try {
     const contents = readDirContents(rootPath);
     return { success: true, contents };
   } catch (e) {
-    return { success: false, error: e.message };
+    return { success: false, error: e instanceof Error ? e.message : e };
   }
 });
 ipcMain.handle("upload-poster", async () => {
@@ -42,8 +42,9 @@ ipcMain.handle("upload-poster", async () => {
       title: "Select Game Poster Image",
       buttonLabel: "Choose Image",
       properties: ["openFile"],
-      filters: [{ name: "Images", extensions: ["jpg", "png", "webp", "gif", "jpeg"] }]
-      // Fixed: filters should be an array
+      filters: [
+        { name: "Images", extensions: ["jpg", "png", "webp", "gif", "jpeg"] }
+      ]
     });
     if (canceled || filePaths.length === 0) {
       return null;
@@ -54,7 +55,7 @@ ipcMain.handle("upload-poster", async () => {
     return null;
   }
 });
-ipcMain.handle("save-game-poster", async (event, gameName, sourcePath) => {
+ipcMain.handle("save-game-poster", async (_event, gameName, sourcePath) => {
   try {
     if (!gameName || !sourcePath) {
       return { success: false, error: "Missing game name or image path" };
@@ -77,11 +78,11 @@ ipcMain.handle("save-game-poster", async (event, gameName, sourcePath) => {
       dataUrl
       // Return the data URL for direct use in img src
     };
-  } catch (error) {
-    console.error("Error saving image:", error);
+  } catch (e) {
+    console.error("Error saving image:", e);
     return {
       success: false,
-      error: error.message
+      error: e instanceof Error ? e.message : e
     };
   }
 });
@@ -89,7 +90,7 @@ const createWindow = () => {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+    icon: path.join(process.env.VITE_PUBLIC ?? "", "electron-vite.svg"),
     width,
     height,
     webPreferences: {
@@ -101,9 +102,9 @@ const createWindow = () => {
     win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
   });
   if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
+    void win.loadURL(VITE_DEV_SERVER_URL);
   } else {
-    win.loadFile(path.join(RENDERER_DIST, "index.html"));
+    void win.loadFile(path.join(RENDERER_DIST, "index.html"));
   }
 };
 app.on("window-all-closed", () => {
