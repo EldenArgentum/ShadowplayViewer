@@ -1,18 +1,12 @@
 import "./App.css"
 import GameCard from "./components/GameCard.tsx"
-import { Button, SemiCircleProgress } from "@mantine/core"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Button } from "@mantine/core"
+import { useEffect, useState } from "react"
 
 const App = () => {
 	const [rootDir, setRootDir] = useState<string>("")
 	const [subDirs, setSubDirs] = useState<string[]>([])
-	const [loadingCount, setLoadingCount] = useState<number>(0)
-	// const loadingCount = useRef<number>(0)
-	const size = 1 / subDirs.length
-	const progressThing: number = useMemo(
-		() => loadingCount * size,
-		[loadingCount, size]
-	)
+
 	// Load saved root directory on startup
 	useEffect(() => {
 		const savedRootDir = localStorage.getItem("rootDir")
@@ -44,11 +38,6 @@ const App = () => {
 		}
 	}
 
-	const handleLoadedCard = useCallback(() => {
-		setLoadingCount(prev => prev + 1)
-		console.log(loadingCount + 1)
-	}, [])
-
 	return (
 		<div style={{ minWidth: "100%" }}>
 			<div className="button-container-top">
@@ -58,13 +47,6 @@ const App = () => {
 						: "Select ShadowPlay Directory"}
 				</Button>
 			</div>
-
-			{loadingCount < subDirs.length && (
-				<SemiCircleProgress
-					value={progressThing}
-					size={200}
-				/>
-			)}
 
 			<div className="game-grid">
 				{subDirs.map(gameDir => (
